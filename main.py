@@ -1,14 +1,15 @@
 contacts = {}
 
 def input_error(func):
-    def wrapper(*args):
+    print(func)
+    def wrapper(*args, **kwargs):
         try:
-            return func(*args)
+            return func(*args,**kwargs)
         except KeyError:
             return "Enter user name"
         except ValueError:
             return "Give me name and phone please"
-    return wrapper()
+    return wrapper
 
 @input_error
 def add(name, phone):
