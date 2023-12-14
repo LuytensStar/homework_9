@@ -1,57 +1,72 @@
 contacts = {}
 
+
 def input_error(func):
-    print(func)
     def wrapper(*args, **kwargs):
         try:
-            return func(*args,**kwargs)
+            return func(*args, **kwargs)
         except KeyError:
-            return "Enter user name"
+            print("Give me name and phone please")
+        except TypeError:
+            print("Give me name and phone please")
         except ValueError:
-            return "Give me name and phone please"
+            print("Give me name and phone please")
+        except NameError:
+            print("Give me name and phone please")
     return wrapper
+
+
+def hello():
+    return 'Hello how can i help you'
+
 
 @input_error
 def add(name, phone):
     contacts[name] = phone
     return f"{name} has been added as {phone}"
 
+
 @input_error
 def change(name, phone):
     contacts[name] = phone
     return f"{name}'s phone number has been updated to {phone}"
 
+
 @input_error
 def number(name):
     return f"{name}'s phone number is {contacts[name]}"
 
+
+@input_error
 def show_all():
-    if not contacts:
-        return "You have no contacts saved"
-    else:
-        return "\n".join([f"{name}: {contacts[name]}" for name in contacts])
+    #return "\n".join([f"{name}: {phone}" for name, phone in contacts.items()])
+    return contacts
+
+
+carry = {'show': show_all(), 'number': number, 'change': change, 'add': add, 'hello': hello()}
+
+
+def parse_command(command):
+    parts = command.split(' ')
+    if '' in parts:
+        parts.remove('')
+    if parts[0] in carry and len(parts) == 3:
+        return carry[str(parts[0])](parts[1], parts[2])
+    elif parts[0] in carry and len(parts) == 2:
+        return carry[parts[0]](parts[1])
+    elif parts[0] in carry and len(parts) == 1:
+        return carry[parts[0]]
+
 
 def main():
+
     while True:
         command = input("Enter a command: ")
-        if command == "hello":
-            print("How can I help you?")
-        elif command.startswith("add"):
-            name, phone = command.split()[1:]
-            print(add(name, phone))
-        elif command.startswith("change"):
-            name, phone = command.split()[1:]
-            print(change(name, phone))
-        elif command.startswith("phone"):
-            name = command.split()[1]
-            print(number(name))
-        elif command == "show all":
-            print(show_all())
-        elif command in ["good bye", "close", "exit"]:
-            print("Good bye!")
+        if command in ['exit', 'close', 'good bye']:
+            print('Good bye!')
             break
-        else:
-            print("Invalid command. Please try again.")
+        print(parse_command(command))
+
 
 if __name__ == "__main__":
     main()
