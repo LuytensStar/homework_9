@@ -47,15 +47,7 @@ def phone(name):
     return f"{name}'s phone number is {contacts[name]}"
 
 
-
-@input_error
-def show_all():
-    #return "\n".join([f"{name}: {phone}" for name, phone in contacts.items()])
-    return contacts
-
-
-
-carry = {'show_all': show_all(), 'phone': phone, 'change': change, 'add': add, 'hello': hello()}
+carry = {'phone': phone, 'change': change, 'add': add, 'hello': hello()}
 
 
 def parse_command(command):
@@ -73,7 +65,9 @@ def parse_command(command):
 def main():
 
     while True:
-        command = input("Enter a command: ")
+        command = input("Enter a command: ").lower()
+        if command == "show all":
+            print("\n".join([f"{name}: {phone}" for name, phone in contacts.items()]))
         if command in ['exit', 'close', 'good bye']:
             print('Good bye!')
             break
